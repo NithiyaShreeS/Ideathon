@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TrackSure Pro - Rural Delivery Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           CORE THEME (BASED ON IDEATHON IMAGES)
+           ========================================
+        */
+        :root {
+            --bg-color: #0A0C0E;
+            --surface-color: #16191C;
+            --surface-hover: #1F2226;
+            --border-color: #2D3135;
+            --accent-color: #FF5E1F;
+            --accent-glow: rgba(255, 94, 31, 0.25);
+            --text-primary: #FFFFFF;
+            --text-secondary: #9BA3AF;
+            --success-color: #22C55E;
+            --danger-color: #EF4444;
+            --warning-color: #FACC15;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* ========================================
+           DEVICE SHELL 
+           ========================================
+        */
+        .app-shell {
+            width: 100%;
+            max-width: 430px;
+            height: 100%;
+            background-color: var(--bg-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
+            border: 1px solid #111;
+        }
+
+        /* ========================================
+           HEADER & NAVIGATION
+           ========================================
+        */
+        .header {
+            padding: 24px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .header .brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .lang-toggle {
+            background: rgba(255, 94, 31, 0.1);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lang-toggle:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* ========================================
+           SCREENS SYSTEM
+           ========================================
+        */
+        .viewport {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            scrollbar-width: none; /* Firefox */
+        }
+        .viewport::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: 100%;
+            animation: screenFadeIn 0.4s ease forwards;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes screenFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========================================
+           REUSABLE UI COMPONENTS
+           ========================================
+        */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            background-color: var(--surface-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            background: #1C2126;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .card-content p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Form Inputs */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            margin-left: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            background-color: #1C2126;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: #24292F;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            padding: 18px;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 8px 24px var(--accent-glow);
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px var(--accent-glow);
+        }
+
+        .btn-voice {
+            background-color: #1F2226;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 16px;
+            width: 100%;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* ========================================
+           SCREEN SPECIFIC COMPONENTS
+           ========================================
+        */
+
+        /* Auth Screen */
+        .auth-logo {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px var(--accent-glow));
+        }
+
+        /* Home Stats */
+        .home-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mini-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .mini-card .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+        .mini-card strong { font-size: 0.85rem; display: block; }
+
+        /* Map Component */
+        .tracking-map {
+            width: 100%;
+            height: 260px;
+            background: #111 url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/78.1193,9.9173,14/450x300?access_token=pk.eyJ1IjoiZGVtbyIsImEiOiJjbGVhcmx5In0') center;
+            background-size: cover;
+            border-radius: 28px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            position: relative;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        .pulse-marker {
+            position: absolute;
+            top: 45%;
+            left: 55%;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+
+        .pulse-marker::after {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* AI Prediction Screen */
+        .ai-status-circle {
+            width: 150px; height: 150px;
+            margin: 30px auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            position: relative;
+        }
+
+        .ai-status-circle img {
+            width: 100px;
+            z-index: 2;
+        }
+
+        /* ========================================
+           NAVIGATION & FOOTER
+           ========================================
+        */
+        .bottom-nav {
+            height: 85px;
+            background-color: #0D0F11;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px 15px 10px;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .nav-item .icon {
+            font-size: 24px;
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .points-bar {
+            background-color: #0D0F11;
+            border-top: 1px solid #1A1D21;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #FFD700;
+            font-weight: 700;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .badge-booked { background: rgba(34, 197, 94, 0.1); color: var(--success-color); }
+        .badge-pending { background: rgba(250, 204, 21, 0.1); color: var(--warning-color); }
+
+        /* QR Logic */
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    
+    <header class="header" id="appHeader" style="display: none;">
+        <div class="brand">TrackSure</div>
+        <div class="header-actions">
+            <button class="lang-toggle" onclick="toggleLanguage()" id="langBtn">ENG 🇮🇳</button>
+            <div onclick="navigateTo('profile')" style="font-size: 1.5rem; cursor: pointer;">👤</div>
+        </div>
+    </header>
+
+    <main class="viewport">
+        
+        <section id="screen-auth" class="screen active" style="text-align: center; padding-top: 60px;">
+            <div class="auth-logo">🚚</div>
+            <h1 style="font-size: 2.2rem; margin-bottom: 8px; color: var(--accent-color);">TrackSure</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 40px; padding: 0 40px;">Real-time service tracking for rural communities.</p>
+            
+            <div style="padding: 0 10px; text-align: left;">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" placeholder="John Doe">
+                </div>
+                <div class="input-group">
+                    <label>Mobile Number</label>
+                    <input type="number" id="reg-phone" placeholder="98765 43210">
+                </div>
+                <button class="btn-primary" onclick="initApp()">Get Started</button>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 0.8rem; color: #444;">By joining, you agree to TrackSure terms.</p>
+        </section>
+
+        <section id="screen-home" class="screen">
+            <h2 class="section-title" id="t-greet">Hello, User!</h2>
+            <p class="section-subtitle">What service do you need today?</p>
+            
+            <div class="card" onclick="openBooking('LPG Cylinder')">
+                <div class="card-icon">🔥</div>
+                <div class="card-content">
+                    <h3 id="t-lpg">Book LPG</h3>
+                    <p id="t-lpg-sub">Gas cylinder registration and delivery</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="openBooking('Water Supply')">
+                <div class="card-icon">💧</div>
+                <div class="card-content">
+                    <h3 id="t-water">Water Supply</h3>
+                    <p id="t-water-sub">Request water tankers for your area</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="openBooking('Maintenance')">
+                <div class="card-icon">🔧</div>
+                <div class="card-content">
+                    <h3 id="t-maint">Maintenance</h3>
+                    <p id="t-maint-sub">Plumbing, Electric or General repairs</p>
+                </div>
+            </div>
+
+            <div class="home-grid">
+                <div class="mini-card" onclick="navigateTo('tracking')">
+                    <span class="icon">📍</span>
+                    <strong>Track Now</strong>
+                </div>
+                <div class="mini-card" style="border-color: var(--danger-color);" onclick="triggerEmergency()">
+                    <span class="icon">🆘</span>
+                    <strong style="color: var(--danger-color);">Emergency</strong>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-booking" class="screen">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px;">
+                <div onclick="navigateTo('home')" style="cursor: pointer; font-size: 1.5rem;">←</div>
+                <h2 class="section-title" style="margin:0;">Confirm Order</h2>
+            </div>
+
+            <div class="input-group">
+                <label>Selected Service</label>
+                <input type="text" id="book-service-field" readonly style="opacity: 0.7;">
+            </div>
+
+            <div class="input-group">
+                <label>Delivery Address</label>
+                <textarea id="book-address-field" rows="3" readonly style="background: #111; border-color: #222;"></textarea>
+                <small style="color: var(--accent-color); cursor: pointer;" onclick="navigateTo('profile')">Change Address in Profile</small>
+            </div>
+
+            <div class="input-group">
+                <label>Quantity / Notes</label>
+                <input type="text" placeholder="e.g. 1 Unit, Urgency High">
+            </div>
+
+            <button class="btn-primary" onclick="processBooking()">Confirm & Pay</button>
+            <button class="btn-voice" onclick="simulateVoice()">🎤 Voice-Based Booking</button>
+        </section>
+
+        <section id="screen-profile" class="screen">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px;">
+                <div onclick="navigateTo('home')" style="cursor: pointer; font-size: 1.5rem;">←</div>
+                <h2 class="section-title" style="margin:0;">Profile Settings</h2>
+            </div>
+
+            <div class="card" style="display: block; cursor: default;">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <p id="prof-name-disp" style="font-weight: 700; margin-bottom: 15px;">-</p>
+                </div>
+                <div class="input-group">
+                    <label>Mobile</label>
+                    <p id="prof-phone-disp" style="font-weight: 700; margin-bottom: 15px;">-</p>
+                </div>
+                <div class="input-group">
+                    <label>Permanent Address</label>
+                    <textarea id="user-address-input" rows="4" placeholder="Enter your full village address..."></textarea>
+                </div>
+                <button class="btn-primary" onclick="updateProfile()">Save Information</button>
+            </div>
+            
+            <button onclick="location.reload()" style="background: none; border: none; color: var(--danger-color); width: 100%; margin-top: 20px; font-weight: 700; cursor: pointer;">Logout Account</button>
+        </section>
+
+        <section id="screen-tracking" class="screen">
+            <h2 class="section-title">Arriving in 18 mins</h2>
+            <p class="section-subtitle">Agent is on the way to your location.</p>
+            
+            <div class="tracking-map">
+                <div class="pulse-marker"></div>
+            </div>
+
+            <div class="card">
+                <img src="https://i.pravatar.cc/100?u=ts" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-color);">
+                <div class="card-content">
+                    <h3>Ashok Kumar</h3>
+                    <p>Verified Delivery Agent ★ 4.8</p>
+                </div>
+                <a href="tel:9876543210" style="text-decoration: none; font-size: 1.5rem;">📞</a>
+            </div>
+
+            <h3 style="margin: 20px 0 10px 0; font-size: 1rem;">Order Timeline</h3>
+            <div id="order-timeline-list">
+                <div style="color: var(--text-secondary); text-align: center; padding: 20px;">No active orders to track.</div>
+            </div>
+        </section>
+
+        <section id="screen-ai" class="screen">
+            <h2 class="section-title">AI Delay Insights</h2>
+            <p class="section-subtitle">Smart prediction based on weather & traffic.</p>
+            
+            <div class="card" style="display: block; text-align: center; padding: 30px;">
+                <div class="ai-status-circle">
+                    <img id="ai-img" src="https://cdn-icons-png.flaticon.com/512/1163/1163734.png">
+                </div>
+                <h1 id="ai-prediction-title" style="color: var(--accent-color); margin-bottom: 10px;">High Delay Risk</h1>
+                <p id="ai-prediction-desc" style="color: var(--text-secondary); line-height: 1.6;">Our AI models predict a 25-minute delay due to regional rain and localized traffic congestion.</p>
+            </div>
+
+            <div class="card">
+                <span>💡</span>
+                <div class="card-content">
+                    <h3>Tip for today</h3>
+                    <p>Book before 4:00 PM to avoid peak-hour rural traffic delays.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-alerts" class="screen">
+            <h2 class="section-title">Help & Support</h2>
+            <p class="section-subtitle">Raise a ticket or verify delivery.</p>
+
+            <div class="card" onclick="alert('Ticket Raised!')">
+                <div class="card-icon">💬</div>
+                <div class="card-content">
+                    <h3>Text Complaint</h3>
+                    <p>எழுத்து மூலம் புகார் அளிக்கவும்</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="simulateVoice()">
+                <div class="card-icon">🎤</div>
+                <div class="card-content">
+                    <h3>Voice Complaint</h3>
+                    <p>குரல் மூலம் புகார் அளிக்கவும்</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <h3 style="margin-bottom: 10px;">Delivery QR Code</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">Show this to the agent upon delivery</p>
+                <div class="qr-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TrackSure-Verified-2026" style="width: 160px;">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="points-bar" id="pointsBar" style="display: none;">
+        🏷️ TrackSure Rewards: <span id="reward-pts">120</span> PTS
+    </div>
+
+    <nav class="bottom-nav" id="bottomNav" style="display: none;">
+        <div class="nav-item active" onclick="handleNav(this, 'home')">
+            <div class="icon">🏠</div>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="handleNav(this, 'tracking')">
+            <div class="icon">🕒</div>
+            <span>Tracking</span>
+        </div>
+        <div class="nav-item" onclick="handleNav(this, 'ai')">
+            <div class="icon">🤖</div>
+            <span>AI Predict</span>
+        </div>
+        <div class="nav-item" onclick="handleNav(this, 'alerts')">
+            <div class="icon">📢</div>
+            <span>Alerts</span>
+        </div>
+    </nav>
+</div>
+
+<script>
+    /* ========================================
+       FRONTEND LOGIC & STATE MANAGEMENT
+       ========================================
+    */
+
+    let state = {
+        user: {
+            name: localStorage.getItem('ts_user') || '',
+            phone: localStorage.getItem('ts_phone') || '',
+            address: localStorage.getItem('ts_address') || 'Not set. Please update in Profile.'
+        },
+        points: parseInt(localStorage.getItem('ts_pts')) || 120,
+        language: 'en',
+        currentService: '',
+        isLoggedIn: false
+    };
+
+    // 1. Initializer
+    function initApp() {
+        const nameInput = document.getElementById('reg-name').value;
+        const phoneInput = document.getElementById('reg-phone').value;
+
+        if (nameInput.length < 2 || phoneInput.length < 10) {
+            alert("Please enter valid credentials to continue.");
+            return;
+        }
+
+        state.user.name = nameInput;
+        state.user.phone = phoneInput;
+        state.isLoggedIn = true;
+
+        // Save to Mock DB
+        localStorage.setItem('ts_user', nameInput);
+        localStorage.setItem('ts_phone', phoneInput);
+
+        // UI Transition
+        document.getElementById('screen-auth').classList.remove('active');
+        document.getElementById('appHeader').style.display = 'flex';
+        document.getElementById('bottomNav').style.display = 'flex';
+        document.getElementById('pointsBar').style.display = 'block';
+        
+        updateProfileUI();
+        navigateTo('home');
+    }
+
+    // 2. Navigation Logic
+    function navigateTo(screenId) {
+        // Hide all
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        
+        // Show target
+        const target = document.getElementById('screen-' + screenId);
+        if (target) target.classList.add('active');
+
+        // Logic for AI Screen
+        if (screenId === 'ai') calculateAIStatus();
+    }
+
+    function handleNav(el, screenId) {
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        el.classList.add('active');
+        navigateTo(screenId);
+    }
+
+    // 3. Booking Logic
+    function openBooking(serviceName) {
+        state.currentService = serviceName;
+        document.getElementById('book-service-field').value = serviceName;
+        document.getElementById('book-address-field').value = state.user.address;
+        navigateTo('booking');
+    }
+
+    function processBooking() {
+        if (state.user.address.includes('Not set')) {
+            alert("Warning: No delivery address found. Redirecting to Profile.");
+            navigateTo('profile');
+            return;
+        }
+
+        // Logic for success
+        state.points += 30;
+        localStorage.setItem('ts_pts', state.points);
+        document.getElementById('reward-pts').innerText = state.points;
+
+        // Update Timeline
+        const timeline = document.getElementById('order-timeline-list');
+        timeline.innerHTML = `
+            <div class="card" style="margin-bottom:10px;">
+                <div class="card-content">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${state.currentService}</strong>
+                        <span class="badge badge-booked">In Transit</span>
+                    </div>
+                    <p>Assigned to Ashok • ID #TS${Math.floor(Math.random()*9000)+1000}</p>
+                </div>
+            </div>
+        ` + timeline.innerHTML;
+
+        alert("Order Placed Successfully! Your agent has been assigned.");
+        navigateTo('tracking');
+    }
+
+    // 4. Profile Logic
+    function updateProfile() {
+        const addr = document.getElementById('user-address-input').value;
+        if (addr.length < 10) {
+            alert("Please enter a detailed address for delivery.");
+            return;
+        }
+        state.user.address = addr;
+        localStorage.setItem('ts_address', addr);
+        updateProfileUI();
+        alert("Profile details updated successfully.");
+        navigateTo('home');
+    }
+
+    function updateProfileUI() {
+        document.getElementById('t-greet').innerText = `Hello, ${state.user.name}!`;
+        document.getElementById('prof-name-disp').innerText = state.user.name;
+        document.getElementById('prof-phone-disp').innerText = state.user.phone;
+        document.getElementById('user-address-input').value = state.user.address;
+        document.getElementById('reward-pts').innerText = state.points;
+    }
+
+    // 5. AI Prediction Engine Simulation
+    function calculateAIStatus() {
+        const hour = new Date().getHours();
+        const title = document.getElementById('ai-prediction-title');
+        const desc = document.getElementById('ai-prediction-desc');
+        const img = document.getElementById('ai-img');
+
+        if (hour >= 18 || hour <= 7) {
+            title.innerText = "Night Delivery Mode";
+            title.style.color = "var(--warning-color)";
+            desc.innerText = "Deliveries after sunset might face localized delays in unlit rural routes. Estimated +10 min delay.";
+            img.src = "https://cdn-icons-png.flaticon.com/512/3222/3222800.png";
+        } else {
+            title.innerText = "Optimal Conditions";
+            title.style.color = "var(--success-color)";
+            desc.innerText = "No major traffic or weather issues detected. Your service will be delivered on time.";
+            img.src = "https://cdn-icons-png.flaticon.com/512/1163/1163763.png";
+        }
+    }
+
+    // 6. Multi-Language Toggle
+    function toggleLanguage() {
+        state.language = state.language === 'en' ? 'ta' : 'en';
+        const btn = document.getElementById('langBtn');
+        btn.innerText = state.language === 'en' ? 'ENG 🇮🇳' : 'தமிழ் 🇮🇳';
+
+        const dict = {
+            en: { 
+                greet: `Hello, ${state.user.name}!`, 
+                lpg: "Book LPG", lpg_s: "Gas cylinder registration",
+                water: "Water Supply", water_s: "Request water tankers",
+                maint: "Maintenance", maint_s: "Plumbing or Electric repairs"
+            },
+            ta: { 
+                greet: `வணக்கம், ${state.user.name}!`, 
+                lpg: "எரிவாயு பதிவு", lpg_s: "LPG சிலிண்டர் முன்பதிவு",
+                water: "தண்ணீர் சேவை", water_s: "வாட்டர் டேங்கர் கோரிக்கை",
+                maint: "பராமரிப்பு", maint_s: "மின்சாரம் மற்றும் பழுதுபார்ப்பு"
+            }
+        };
+
+        const currentDict = dict[state.language];
+        document.getElementById('t-greet').innerText = currentDict.greet;
+        document.getElementById('t-lpg').innerText = currentDict.lpg;
+        document.getElementById('t-lpg-sub').innerText = currentDict.lpg_s;
+        document.getElementById('t-water').innerText = currentDict.water;
+        document.getElementById('t-water-sub').innerText = currentDict.water_s;
+        document.getElementById('t-maint').innerText = currentDict.maint;
+        document.getElementById('t-maint-sub').innerText = currentDict.maint_s;
+    }
+
+    // 7. Small Utilities
+    function triggerEmergency() {
+        const confirmMsg = confirm("EMERGENCY: Do you want to notify local authorities and TrackSure rapid response team of your location?");
+        if (confirmMsg) alert("Success: Rapid response team is dispatched to your GPS coordinates.");
+    }
+
+    function simulateVoice() {
+        alert("Listening... [Say 'Book LPG' or 'Track my order' in your regional language]");
+    }
+
+</script>
+</body>
+</html>
