@@ -7,10 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ========================================
-           CORE THEME (BASED ON IDEATHON IMAGES)
-           ========================================
-        */
+        
         :root {
             --bg-color: #0A0C0E;
             --surface-color: #16191C;
@@ -45,10 +42,7 @@
             overflow: hidden;
         }
 
-        /* ========================================
-           DEVICE SHELL 
-           ========================================
-        */
+       
         .app-shell {
             width: 100%;
             max-width: 430px;
@@ -61,10 +55,7 @@
             border: 1px solid #111;
         }
 
-        /* ========================================
-           HEADER & NAVIGATION
-           ========================================
-        */
+        
         .header {
             padding: 24px 20px;
             display: flex;
@@ -105,10 +96,7 @@
             color: white;
         }
 
-        /* ========================================
-           SCREENS SYSTEM
-           ========================================
-        */
+        
         .viewport {
             flex: 1;
             overflow-y: auto;
@@ -133,10 +121,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========================================
-           REUSABLE UI COMPONENTS
-           ========================================
-        */
+        
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -272,19 +257,14 @@
             margin-top: 12px;
         }
 
-        /* ========================================
-           SCREEN SPECIFIC COMPONENTS
-           ========================================
-        */
-
-        /* Auth Screen */
+        
         .auth-logo {
             font-size: 4rem;
             margin-bottom: 10px;
             filter: drop-shadow(0 0 15px var(--accent-glow));
         }
 
-        /* Home Stats */
+       
         .home-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -303,7 +283,7 @@
         .mini-card .icon { font-size: 28px; margin-bottom: 8px; display: block; }
         .mini-card strong { font-size: 0.85rem; display: block; }
 
-        /* Map Component */
+        
         .tracking-map {
             width: 100%;
             height: 260px;
@@ -341,7 +321,7 @@
             100% { transform: scale(1.5); opacity: 0; }
         }
 
-        /* AI Prediction Screen */
+       
         .ai-status-circle {
             width: 150px; height: 150px;
             margin: 30px auto;
@@ -358,10 +338,7 @@
             z-index: 2;
         }
 
-        /* ========================================
-           NAVIGATION & FOOTER
-           ========================================
-        */
+        
         .bottom-nav {
             height: 85px;
             background-color: #0D0F11;
@@ -406,7 +383,7 @@
             font-weight: 700;
         }
 
-        /* Status Badges */
+        
         .badge {
             padding: 6px 12px;
             border-radius: 100px;
@@ -417,7 +394,7 @@
         .badge-booked { background: rgba(34, 197, 94, 0.1); color: var(--success-color); }
         .badge-pending { background: rgba(250, 204, 21, 0.1); color: var(--warning-color); }
 
-        /* QR Logic */
+        
         .qr-container {
             background: white;
             padding: 20px;
@@ -652,10 +629,7 @@
 </div>
 
 <script>
-    /* ========================================
-       FRONTEND LOGIC & STATE MANAGEMENT
-       ========================================
-    */
+   
 
     let state = {
         user: {
@@ -683,11 +657,10 @@
         state.user.phone = phoneInput;
         state.isLoggedIn = true;
 
-        // Save to Mock DB
+       
         localStorage.setItem('ts_user', nameInput);
         localStorage.setItem('ts_phone', phoneInput);
 
-        // UI Transition
         document.getElementById('screen-auth').classList.remove('active');
         document.getElementById('appHeader').style.display = 'flex';
         document.getElementById('bottomNav').style.display = 'flex';
@@ -697,16 +670,16 @@
         navigateTo('home');
     }
 
-    // 2. Navigation Logic
+    
     function navigateTo(screenId) {
-        // Hide all
+       
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         
-        // Show target
+        
         const target = document.getElementById('screen-' + screenId);
         if (target) target.classList.add('active');
 
-        // Logic for AI Screen
+        
         if (screenId === 'ai') calculateAIStatus();
     }
 
@@ -716,7 +689,7 @@
         navigateTo(screenId);
     }
 
-    // 3. Booking Logic
+    
     function openBooking(serviceName) {
         state.currentService = serviceName;
         document.getElementById('book-service-field').value = serviceName;
@@ -731,12 +704,12 @@
             return;
         }
 
-        // Logic for success
+       
         state.points += 30;
         localStorage.setItem('ts_pts', state.points);
         document.getElementById('reward-pts').innerText = state.points;
 
-        // Update Timeline
+        
         const timeline = document.getElementById('order-timeline-list');
         timeline.innerHTML = `
             <div class="card" style="margin-bottom:10px;">
@@ -754,7 +727,7 @@
         navigateTo('tracking');
     }
 
-    // 4. Profile Logic
+   
     function updateProfile() {
         const addr = document.getElementById('user-address-input').value;
         if (addr.length < 10) {
@@ -776,7 +749,7 @@
         document.getElementById('reward-pts').innerText = state.points;
     }
 
-    // 5. AI Prediction Engine Simulation
+    
     function calculateAIStatus() {
         const hour = new Date().getHours();
         const title = document.getElementById('ai-prediction-title');
@@ -796,7 +769,7 @@
         }
     }
 
-    // 6. Multi-Language Toggle
+    
     function toggleLanguage() {
         state.language = state.language === 'en' ? 'ta' : 'en';
         const btn = document.getElementById('langBtn');
@@ -827,7 +800,7 @@
         document.getElementById('t-maint-sub').innerText = currentDict.maint_s;
     }
 
-    // 7. Small Utilities
+   
     function triggerEmergency() {
         const confirmMsg = confirm("EMERGENCY: Do you want to notify local authorities and TrackSure rapid response team of your location?");
         if (confirmMsg) alert("Success: Rapid response team is dispatched to your GPS coordinates.");
