@@ -79,28 +79,6 @@ tracksure/
 
 ---
 
-## ▶️ How to Run
-
-### 1. Install dependencies
-
-```bash
-pip install flask
-```
-
-### 2. Run the server
-
-```bash
-python app.py
-```
-
-### 3. Open in browser
-
-```
-http://127.0.0.1:5000
-```
-
----
-
 ## 🧪 Demo Usage
 
 1. Register a new user
